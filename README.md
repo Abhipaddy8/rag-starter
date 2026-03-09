@@ -6,7 +6,15 @@ Open-source RAG chatbot starter kit. Fork it, point it at your docs, deploy to V
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fabhipaddy8%2Frag-starter&env=NEXT_PUBLIC_SUPABASE_URL,SUPABASE_SERVICE_ROLE_KEY,OPENROUTER_API_KEY&envDescription=Set%20your%20Supabase%20and%20LLM%20provider%20keys.%20Use%20OPENROUTER_API_KEY%20or%20replace%20with%20OPENAI_API_KEY.&project-name=rag-starter)
 
-**[Live Demo](https://rag-starter-one.vercel.app)**
+## Live Demo
+
+Try it now: **[rag-starter-one.vercel.app](https://rag-starter-one.vercel.app)**
+
+This demo is powered by Notion help articles — ask it anything about Notion and get cited answers instantly.
+
+| Empty State | Chat with Citations |
+|:-----------:|:-------------------:|
+| ![Empty state with suggested questions](public/demo-empty.png) | ![Chat response with source citations](public/demo-chat.png) |
 
 ## How it works
 
