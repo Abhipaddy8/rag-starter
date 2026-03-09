@@ -14,4 +14,4 @@
 ## Phase 2: Open Source Release
 - ✅ **5 — Generalize** — Remove Notion-specific hardcoding, make system prompt configurable, fix env var inconsistencies, support OpenAI direct + OpenRouter
 - ✅ **6 — README & Docs** — Write real README with architecture diagram, setup guide, Deploy to Vercel button, contributing guide
-- ▶ **7 — Deploy & Publish** — Deploy live demo to Vercel, push to GitHub as public repo, add license
+- ✅ **7 — Deploy & Publish** — Deploy live demo to Vercel, push to GitHub as public repo, add license

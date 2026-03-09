@@ -1,6 +1,9 @@
 {
   "name": "rag-starter",
   "version": "1.0.0",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -10,11 +13,8 @@
     "setup-db": "echo 'Run scripts/setup-supabase.sql in your Supabase SQL editor'"
   },
   "dependencies": {
-    "@langchain/community": "^1.1.22",
-    "@langchain/openai": "^1.2.12",
     "@supabase/supabase-js": "^2.98.0",
     "cheerio": "^1.2.0",
-    "langchain": "^1.2.30",
     "next": "16.1.6",
     "openai": "^6.27.0",
     "react": "19.2.3",
