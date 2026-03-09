@@ -37,6 +37,9 @@ yarn-error.log*
 # test scripts
 scripts/test-*.ts
 
+# project management
+.ai-guide/
+
 # vercel
 .vercel
 

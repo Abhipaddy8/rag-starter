@@ -1,13 +1,15 @@
 /**
- * Notion Help Docs Ingestion Script
+ * Document Ingestion Script
  *
- * Crawls Notion help articles from their sitemap, chunks them,
+ * Crawls web pages, extracts text, chunks them,
  * generates embeddings, and stores in Supabase pgvector.
  *
- * Usage: npx tsx scripts/ingest-notion-docs.ts
+ * Usage:
+ *   npx tsx scripts/ingest-docs.ts <url1> <url2> ...
+ *   npx tsx scripts/ingest-docs.ts --file urls.txt
  *
  * Requires .env.local with:
- *   OPENROUTER_API_KEY
+ *   OPENROUTER_API_KEY or OPENAI_API_KEY
  *   NEXT_PUBLIC_SUPABASE_URL
  *   SUPABASE_SERVICE_ROLE_KEY
  */
@@ -34,45 +36,32 @@ if (fs.existsSync(envPath)) {
   }
 }
 
+// Validate required env vars
+const apiKey = process.env.OPENROUTER_API_KEY || process.env.OPENAI_API_KEY;
+if (!apiKey) {
+  console.error("ERROR: Set OPENROUTER_API_KEY or OPENAI_API_KEY in .env.local");
+  process.exit(1);
+}
+if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+  console.error("ERROR: Set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in .env.local");
+  process.exit(1);
+}
+
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
+const useOpenRouter = !!process.env.OPENROUTER_API_KEY;
 const openai = new OpenAI({
-  apiKey: process.env.OPENROUTER_API_KEY,
-  baseURL: "https://openrouter.ai/api/v1",
+  apiKey,
+  baseURL: useOpenRouter ? "https://openrouter.ai/api/v1" : "https://api.openai.com/v1",
 });
 
 const CHUNK_SIZE = 800;
 const CHUNK_OVERLAP = 200;
-const EMBEDDING_MODEL = "openai/text-embedding-3-small";
+const EMBEDDING_MODEL = useOpenRouter ? "openai/text-embedding-3-small" : "text-embedding-3-small";
 const BATCH_SIZE = 20;
-
-// Known Notion help article URLs — a curated starter set.
-// In production, you'd crawl notion.so/help/sitemap.xml for all 2000+ articles.
-const NOTION_HELP_URLS = [
-  "https://www.notion.so/help/what-is-notion",
-  "https://www.notion.so/help/navigate-notion",
-  "https://www.notion.so/help/create-your-first-page",
-  "https://www.notion.so/help/writing-and-editing-basics",
-  "https://www.notion.so/help/what-is-a-block",
-  "https://www.notion.so/help/what-is-a-database",
-  "https://www.notion.so/help/intro-to-databases",
-  "https://www.notion.so/help/database-properties",
-  "https://www.notion.so/help/views-filters-and-sorts",
-  "https://www.notion.so/help/formulas",
-  "https://www.notion.so/help/relations-and-rollups",
-  "https://www.notion.so/help/sharing-and-permissions",
-  "https://www.notion.so/help/teamspaces",
-  "https://www.notion.so/help/guides/using-templates",
-  "https://www.notion.so/help/keyboard-shortcuts",
-  "https://www.notion.so/help/synced-blocks",
-  "https://www.notion.so/help/import-data-into-notion",
-  "https://www.notion.so/help/export-your-content",
-  "https://www.notion.so/help/comments-and-discussions",
-  "https://www.notion.so/help/notion-ai",
-];
 
 function chunkText(
   content: string,
@@ -170,15 +159,46 @@ async function generateEmbeddings(texts: string[]): Promise<number[][]> {
   return res.data.map((d) => d.embedding);
 }
 
+function getUrls(): string[] {
+  const args = process.argv.slice(2);
+
+  if (args.length === 0) {
+    console.error("Usage:");
+    console.error("  npx tsx scripts/ingest-docs.ts <url1> <url2> ...");
+    console.error("  npx tsx scripts/ingest-docs.ts --file urls.txt");
+    console.error("");
+    console.error("Example:");
+    console.error("  npx tsx scripts/ingest-docs.ts https://docs.example.com/getting-started https://docs.example.com/api");
+    process.exit(1);
+  }
+
+  if (args[0] === "--file") {
+    const filePath = args[1];
+    if (!filePath || !fs.existsSync(filePath)) {
+      console.error(`ERROR: File not found: ${filePath}`);
+      process.exit(1);
+    }
+    return fs
+      .readFileSync(filePath, "utf-8")
+      .split("\n")
+      .map((l) => l.trim())
+      .filter((l) => l && !l.startsWith("#"));
+  }
+
+  return args;
+}
+
 async function main() {
-  console.log("=== Notion Help Docs Ingestion ===\n");
-  console.log(`Processing ${NOTION_HELP_URLS.length} articles...\n`);
+  const urls = getUrls();
+
+  console.log("=== Document Ingestion ===\n");
+  console.log(`Processing ${urls.length} URL(s)...\n`);
 
   let totalChunks = 0;
   let articlesProcessed = 0;
 
-  for (const url of NOTION_HELP_URLS) {
-    console.log(`[${articlesProcessed + 1}/${NOTION_HELP_URLS.length}] ${url}`);
+  for (const url of urls) {
+    console.log(`[${articlesProcessed + 1}/${urls.length}] ${url}`);
 
     const article = await fetchArticle(url);
     if (!article) continue;

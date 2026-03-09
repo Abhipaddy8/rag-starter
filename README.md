@@ -4,7 +4,9 @@ Open-source RAG chatbot starter kit. Fork it, point it at your docs, deploy to V
 
 **Stack:** Next.js + Supabase pgvector + OpenAI (or OpenRouter)
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fabhipaddy8%2Frag-starter&env=NEXT_PUBLIC_SUPABASE_URL,SUPABASE_SERVICE_ROLE_KEY,OPENROUTER_API_KEY&envDescription=API%20keys%20needed%20for%20RAG%20Starter&project-name=rag-starter)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fabhipaddy8%2Frag-starter&env=NEXT_PUBLIC_SUPABASE_URL,SUPABASE_SERVICE_ROLE_KEY,OPENROUTER_API_KEY&envDescription=Set%20your%20Supabase%20and%20LLM%20provider%20keys.%20Use%20OPENROUTER_API_KEY%20or%20replace%20with%20OPENAI_API_KEY.&project-name=rag-starter)
+
+**[Live Demo](https://rag-starter-one.vercel.app)**
 
 ## How it works
 
@@ -19,7 +21,7 @@ Your Docs → Chunking (800 chars) → Embeddings (text-embedding-3-small)
 - Scope enforcement — refuses questions outside your docs
 - One config file (`rag.config.ts`) to customize everything
 - Works with OpenAI direct or OpenRouter
-- Ingest API + CLI script for adding documents
+- Ingest via CLI (pass URLs) or REST API
 - Dark mode, mobile-friendly chat UI
 
 ## Quick Start
@@ -34,8 +36,11 @@ npm install
 
 ### 2. Set up Supabase
 
-Create a [Supabase](https://supabase.com) project, then run `scripts/setup-supabase.sql` in the SQL Editor. This creates:
+1. Create a free project at [supabase.com](https://supabase.com)
+2. Go to **SQL Editor** in the Supabase dashboard
+3. Paste the contents of `scripts/setup-supabase.sql` and click **Run**
 
+This creates:
 - `documents` table with pgvector embeddings
 - HNSW index for fast similarity search
 - `match_documents` RPC function
@@ -52,14 +57,36 @@ Fill in your keys:
 NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 
-# Pick one:
-OPENROUTER_API_KEY=your-openrouter-key   # recommended
-# OPENAI_API_KEY=your-openai-key         # or use OpenAI direct
+# Pick ONE:
+OPENROUTER_API_KEY=your-openrouter-key
+# OPENAI_API_KEY=your-openai-key
 ```
+
+> **Note:** Never commit `.env.local` — it contains your secret keys. The `.gitignore` already excludes it.
 
 ### 4. Ingest your docs
 
-**Option A — Use the ingest API:**
+**Option A — CLI script (recommended):**
+
+Pass URLs directly:
+
+```bash
+npx tsx scripts/ingest-docs.ts https://docs.example.com/getting-started https://docs.example.com/api
+```
+
+Or use a file with one URL per line:
+
+```bash
+npx tsx scripts/ingest-docs.ts --file urls.txt
+```
+
+You can also use the npm script shorthand:
+
+```bash
+npm run ingest -- https://docs.example.com/getting-started
+```
+
+**Option B — REST API:**
 
 ```bash
 curl -X POST http://localhost:3000/api/ingest \
@@ -73,14 +100,6 @@ curl -X POST http://localhost:3000/api/ingest \
   }'
 ```
 
-**Option B — Modify the ingestion script:**
-
-Edit `scripts/ingest-notion-docs.ts` with your own URLs and run:
-
-```bash
-npm run ingest
-```
-
 ### 5. Customize & run
 
 Edit `rag.config.ts` to set your chatbot's name, system prompt, and suggested questions:
@@ -91,7 +110,6 @@ export const RAG_CONFIG = {
   domain: "Acme products",
   systemPrompt: "You are Acme's support bot...",
   suggestedQuestions: ["How do I reset my password?", ...],
-  // ...
 };
 ```
 
@@ -106,13 +124,13 @@ Open [http://localhost:3000](http://localhost:3000).
 ```
 rag.config.ts              ← Customize everything here
 scripts/
-  setup-supabase.sql       ← Database schema (run once)
-  ingest-notion-docs.ts    ← Example ingestion script
+  setup-supabase.sql       ← Database schema (run once in Supabase SQL Editor)
+  ingest-docs.ts           ← CLI ingestion script (pass URLs as args)
 src/
   app/
     api/
       chat/route.ts        ← Chat endpoint (retrieval + LLM)
-      ingest/route.ts      ← Document ingestion endpoint
+      ingest/route.ts      ← Document ingestion REST API
       stats/route.ts       ← Health check / stats
     page.tsx               ← Chat UI
   components/
@@ -148,8 +166,13 @@ All settings live in `rag.config.ts`:
 
 1. Push to GitHub
 2. Import in [Vercel](https://vercel.com/new)
-3. Add environment variables (`NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `OPENROUTER_API_KEY` or `OPENAI_API_KEY`)
+3. Add environment variables:
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `SUPABASE_SERVICE_ROLE_KEY`
+   - `OPENROUTER_API_KEY` **or** `OPENAI_API_KEY`
 4. Deploy
+
+Your secret keys are server-side only — they are never exposed to the browser.
 
 ## Tech Stack
 
