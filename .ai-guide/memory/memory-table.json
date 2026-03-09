@@ -1,0 +1,176 @@
+{
+  "version": 1,
+  "windowSize": 15,
+  "items": [
+    {
+      "id": "71a9bb7e-c25d-44dc-83e1-d6d03bf85e87",
+      "content": "Project: notion-has-million. Intent: build",
+      "category": "architecture",
+      "sessionsActive": 1,
+      "cosineSimilarityHits": 0,
+      "status": "new",
+      "createdAt": "2026-03-09T10:41:22.866Z",
+      "lastHitAt": null
+    },
+    {
+      "id": "a1573c5b-9d43-4c38-824a-b4bfd7d83528",
+      "content": "# Decisions Log",
+      "category": "decision",
+      "sessionsActive": 0,
+      "cosineSimilarityHits": 0,
+      "status": "new",
+      "createdAt": "2026-03-09T11:04:20.657Z",
+      "lastHitAt": null
+    },
+    {
+      "id": "ded2a04b-abe4-411a-9457-8b5c405cf43d",
+      "content": "TypeScript + Next.js App Router — Modern full-stack framework with built-in API routes, matches project complexity needs",
+      "category": "decision",
+      "sessionsActive": 0,
+      "cosineSimilarityHits": 0,
+      "status": "new",
+      "createdAt": "2026-03-09T11:04:20.657Z",
+      "lastHitAt": null
+    },
+    {
+      "id": "88998e5b-3547-4e9c-a0bc-f86f566c5a80",
+      "content": "Supabase pgvector for vector store — Native Postgres extension, no extra infra needed, Supabase already in stack",
+      "category": "decision",
+      "sessionsActive": 0,
+      "cosineSimilarityHits": 0,
+      "status": "new",
+      "createdAt": "2026-03-09T11:04:20.657Z",
+      "lastHitAt": null
+    },
+    {
+      "id": "755b7f80-9eb4-4ba4-9029-5922835f97d5",
+      "content": "text-embedding-3-small (1536 dims) — Best cost/performance ratio for help doc search, sufficient accuracy for support articles",
+      "category": "decision",
+      "sessionsActive": 0,
+      "cosineSimilarityHits": 0,
+      "status": "new",
+      "createdAt": "2026-03-09T11:04:20.657Z",
+      "lastHitAt": null
+    },
+    {
+      "id": "d3107491-5924-4ad4-9e11-f53ddbf36106",
+      "content": "GPT-4o-mini for answer generation — Fast, cheap, sufficient quality for scoped Q&A with provided context",
+      "category": "decision",
+      "sessionsActive": 0,
+      "cosineSimilarityHits": 0,
+      "status": "new",
+      "createdAt": "2026-03-09T11:04:20.657Z",
+      "lastHitAt": null
+    },
+    {
+      "id": "a9aacf76-18b0-4ebb-bc23-74f005892407",
+      "content": "800 char chunks with 200 overlap — Balances context completeness vs retrieval precision for help articles",
+      "category": "decision",
+      "sessionsActive": 0,
+      "cosineSimilarityHits": 0,
+      "status": "new",
+      "createdAt": "2026-03-09T11:04:20.657Z",
+      "lastHitAt": null
+    },
+    {
+      "id": "9ff2ddc7-3874-47b1-a6b2-a9eb14b1e323",
+      "content": "Cosine similarity threshold 0.7, top 5 results — Filters irrelevant matches while providing enough context for accurate answers",
+      "category": "decision",
+      "sessionsActive": 0,
+      "cosineSimilarityHits": 0,
+      "status": "new",
+      "createdAt": "2026-03-09T11:04:20.657Z",
+      "lastHitAt": null
+    },
+    {
+      "id": "c0a0b817-8807-4deb-8a4e-9a07c92e0748",
+      "content": "Scope enforcement in system prompt — Simpler than a separate classifier, effective for single-domain chatbot (Notion help only)",
+      "category": "decision",
+      "sessionsActive": 0,
+      "cosineSimilarityHits": 0,
+      "status": "new",
+      "createdAt": "2026-03-09T11:04:20.658Z",
+      "lastHitAt": null
+    },
+    {
+      "id": "5d2c3592-d422-4540-b18d-9a76bad3b2bb",
+      "content": "OpenRouter instead of OpenAI direct — OpenAI API key was out of quota, OpenRouter provides same models via unified gateway",
+      "category": "decision",
+      "sessionsActive": 0,
+      "cosineSimilarityHits": 0,
+      "status": "new",
+      "createdAt": "2026-03-09T11:04:20.658Z",
+      "lastHitAt": null
+    },
+    {
+      "id": "24783fad-889f-465d-ae4d-de23b84b16d8",
+      "content": "HNSW index instead of IVFFlat — IVFFlat with lists=100 on 518 rows caused probe misses — Sharing article (0.67 similarity) was invisible. HNSW is accurate at any dataset size without tuning.",
+      "category": "decision",
+      "sessionsActive": 0,
+      "cosineSimilarityHits": 0,
+      "status": "new",
+      "createdAt": "2026-03-09T11:04:20.658Z",
+      "lastHitAt": null
+    },
+    {
+      "id": "9d60c81c-c8f7-4645-9bc6-26c92b1208c9",
+      "content": "Lowered similarity threshold to 0.2 — OpenRouter embeddings produce lower cosine similarities (0.3-0.7 range). 0.7 threshold returned zero results; 0.2 catches relevant matches while filtering noise.",
+      "category": "decision",
+      "sessionsActive": 0,
+      "cosineSimilarityHits": 0,
+      "status": "new",
+      "createdAt": "2026-03-09T11:04:20.658Z",
+      "lastHitAt": null
+    },
+    {
+      "id": "31da6a74-532e-4f1c-a437-b6822ceb839e",
+      "content": "Git-tracked .env.local.example, excluded .env.local — Standard practice — template for env vars without exposing secrets",
+      "category": "decision",
+      "sessionsActive": 0,
+      "cosineSimilarityHits": 0,
+      "status": "new",
+      "createdAt": "2026-03-09T11:04:20.658Z",
+      "lastHitAt": null
+    },
+    {
+      "id": "b7f23f89-94f4-43b8-bc3a-ade8f8629ab6",
+      "content": "Mission completed: Foundation: Scaffold project structure, install dependencies, configure tooling",
+      "category": "progress",
+      "sessionsActive": 0,
+      "cosineSimilarityHits": 0,
+      "status": "new",
+      "createdAt": "2026-03-09T11:04:20.659Z",
+      "lastHitAt": null
+    },
+    {
+      "id": "81c0c690-8a1d-4e08-88eb-9d89f3565ea0",
+      "content": "Mission completed: Core Loop: Build the primary feature that defines the product",
+      "category": "progress",
+      "sessionsActive": 0,
+      "cosineSimilarityHits": 0,
+      "status": "new",
+      "createdAt": "2026-03-09T11:04:20.659Z",
+      "lastHitAt": null
+    },
+    {
+      "id": "d69f5ba4-ef02-4cce-8ad3-241bd3d19e86",
+      "content": "Mission completed: Integration: Connect all layers, wire APIs, handle data flow",
+      "category": "progress",
+      "sessionsActive": 0,
+      "cosineSimilarityHits": 0,
+      "status": "new",
+      "createdAt": "2026-03-09T11:04:20.659Z",
+      "lastHitAt": null
+    },
+    {
+      "id": "8afd6cd0-520b-4a15-a7bd-7209c51b4e7f",
+      "content": "Mission completed: Ship: Build config, deployment setup, final checks",
+      "category": "progress",
+      "sessionsActive": 0,
+      "cosineSimilarityHits": 0,
+      "status": "new",
+      "createdAt": "2026-03-09T11:04:20.659Z",
+      "lastHitAt": null
+    }
+  ]
+}
